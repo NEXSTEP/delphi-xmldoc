@@ -5,12 +5,8 @@ Generate html documentation from Delphi xml documentation
 
 Used some portions of code and icons from NDOC (http://ndoc.sourceforge.net/)
 
-Requires third-party XSLT2 processor.
-
-I recommend AltovaXML Community Edition
+Requires installed third-party XSLT2 processor: AltovaXML Community Edition
 http://www.altova.com/download/altovaxml/xml-processor-community.html
-
-Before start - change variable xmlProcessor into start.js to correct path to AltivaXML executable.
 
 ## USAGE
 
