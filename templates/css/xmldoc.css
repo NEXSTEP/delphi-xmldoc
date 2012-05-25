@@ -1,0 +1,267 @@
+body 
+{
+	margin: 0px 0px 0px 0px;
+	padding: 0px 0px 0px 0px;
+	background: #ffffff;
+	color: #000000;
+	font-family: Verdana, Arial, Helvetica, sans-serif;
+	font-size: 70%;
+	width: 100%;
+}
+
+h1, h2, h3, h4
+{
+	font-family: Verdana, Arial, Helvetica, sans-serif;
+	margin-left: -18px;
+	margin-bottom: .4em;
+	margin-top: 1em;
+	font-weight: bold;
+}
+h1
+{
+	font-size: 120%;
+	margin-top: 0em;
+}
+div#scrollyes h1 /* Changes font size for full-scrolling topic */
+{
+	font-size: 150%;
+}
+h2
+{
+	font-size: 130%;
+}
+h3
+{
+	font-size: 115%;
+}
+h4
+{
+	font-size: 100%;
+}
+
+p
+{
+	margin: .5em 0em .5em 0em;
+}
+
+table
+{
+	width: 100%; /* Forces tables to have correct right margin */
+	margin-top: .6em;
+	margin-bottom: .3em;
+	border-width: 1px 1px 0px 0px;
+	border-style: solid;
+	border-color: #999999;
+	font-size: 100%; /* Text in Table is same size as text outside table */
+}
+table th, table td
+{
+	border-style: solid; /* Creates the cell border and color */
+	border-width: 0px 0px 1px 1px;
+	border-style: solid;
+	border-color: #999999;
+	padding: 4px 6px;
+	text-align: left;
+}
+table th
+{
+	background: #cccccc; /* Creates the shaded table header row */
+	vertical-align: bottom;
+}
+table td
+{
+	background: #ffffff;
+	vertical-align: top;
+}
+table td a
+{
+	vertical-align: top;
+}
+
+/*------------------------------ Begin Note Styles -------------------------------*/
+
+div.note table, div.code table
+{
+    border: 0px;
+    font-size: 100%;
+    width: 100%;
+    margin-left:-1px;
+    margin-top: 0px;
+    margin-bottom: 5px;
+}
+
+div.note table th, div.code table th
+{
+    text-align: left;
+    border-left-width: 0px;
+    background: #EFEFF7;
+    color: #000066;
+    padding-left: 5px;
+    padding-right: 5px;
+    padding-top:2px;
+    padding-bottom:2px;
+}
+
+div.note table td, div.code table td
+{
+    background:	#F7F7FF;
+    border-left-width: 0px;
+    padding-left: 5px;
+    padding-right: 5px;
+}
+
+div.note table p, div.code table p
+{
+    margin-left:4px;
+    margin-right:4px;
+    margin-top:2px;
+    margin-bottom:4px;
+}
+img.note {
+    margin-right:4px;
+}
+
+/*------------------------------ End Note Styles -------------------------------*/
+
+div#nstext {
+    padding: 5px 10px 0px 22px;
+}
+
+div#nsbanner /* Creates Nonscrolling banner region */
+{
+	position: relative;
+	left: 0px;
+	padding: 0px 0px 0px 0px;
+	border-bottom: 1px solid #999999;
+}
+
+div#bannerrow1 /* provides full-width color to top row in running head (requires script) */
+{
+	background-color: #99ccff;
+}
+div#titlerow /* provides non-scroll topic title area (requires script) */
+{
+	width: 100%; /* Forces tables to have correct right margin */
+	padding: 0px 10px 0px 22px;
+	background-color: #99ccff;
+}
+table.bannerparthead, table.bannertitle /* General values for the Running Head tables */
+{
+	position: relative;
+	left: 0px;
+	top: 0px;
+	padding: 0px 0px 0px 0px;
+	margin: 0px 0px 0px 0px;
+	width: 100%;
+	height: 21px;
+	border-collapse: collapse;
+	border-style: solid;
+	border-width: 0px;
+	background-color: #99ccff;
+	font-size: 100%;
+}
+table.bannerparthead td /* General Values for cells in the top row of running head */
+{
+	margin: 0px 0px 0px 0px;
+	padding: 2px 0px 0px 4px;
+	vertical-align: middle; /*border-width: 0px 0px 1px 0px; */
+	border-width: 0px;
+	border-style: solid;
+	border-color: #999999;
+	background: transparent;
+	font-style: italic;
+	font-weight: normal;
+}
+table.bannerparthead td.product /* Values for top right cell in running head */
+{
+	/* Allows for a second text block in the running head */
+	text-align: right;
+	padding: 2px 5px 0px 5px;
+}
+table.bannertitle td /* General Values for cells in the bottom row of running head */
+{
+	margin: 0px 0px 0px 0px;
+	padding: 0px 0px 0px 3px;
+	vertical-align: middle;
+	border-width: 0px 0px 1px 0px;
+	border-style: solid;
+	border-color: #999999;
+	background: transparent;
+	font-weight: bold;
+}
+div.sapop /* See Also & Requirements popups */
+{
+	position: absolute;
+	left: 0px;
+	z-index: 1;
+	width: 50%;
+	padding: 0px 8px 5px 26px;
+	visibility: hidden;
+	border: 1px solid #999999; /* Same as all other border colors */
+	background: #ffffcc;
+}
+td.button1 /* Values for button cells */
+{
+	width: 14px;
+	cursor: hand;
+}
+
+/* --------------------------------------------------
+           CODE, SYNTAX, and REFTIP STYLES
+-------------------------------------------------- */
+
+pre
+{
+	margin-top: .5em;
+	margin-bottom: .5em;
+}
+pre, code, .code
+{
+	font: 100% Monospace, Courier New, Courier; /* This is 100% of 70% */
+	color: #000066;
+}
+pre b, code b
+{
+	letter-spacing: .1em; /* opens kerning on bold in Syntax/Code */
+}
+pre.syntax
+{
+	background: #cccccc;
+	padding: 4px 8px;
+	cursor: text;
+	margin-top: 1em;
+	margin-bottom: 1em;
+	color: #000000;
+	border-width: 1px;
+	border-style: solid;
+	border-color: #999999;
+}
+div.reftip /* Defines the RefTip popup in Syntax */
+{
+	position: absolute;
+	z-index: 1;
+	visibility: hidden;
+	border: 1px solid #999999;
+	background: #ffffcc; /*	padding: 0px 0px 0px 0px; */
+}
+
+div.reftip dl /* Sets margin around the text within the popup */
+{
+	margin: 3px 8px 8px 8px;
+}
+a.synParam /* parameter popup links */
+{
+	color: #0000ff; /* Must match the a:link style color */
+	text-decoration: underline;
+}
+a.synParam:visited /* ensures parameter popup links are always the unvisited color */
+{
+	color: #0000ff; /* Must match the a:link style color */
+	text-decoration: underline;
+}
+a.synParam:hover /* parameter popup links */
+{
+	color: #3366ff; /* Must match the a:hover style color */
+	text-decoration: underline;
+	font-style: italic;
+}
