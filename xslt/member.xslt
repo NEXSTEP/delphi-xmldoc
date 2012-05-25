@@ -60,26 +60,7 @@
 					<xsl:call-template name="exceptions-section" />
 					<xsl:call-template name="example-section" />
 					<xsl:call-template name="comments-section" />
-					<!--xsl:call-template name="seealso-section" /-->
-				        <h3>
-			        	    <xsl:value-of select="$sectionConfigurations/node()[name()='seealso']" /> 
-				        </h3>
-					<p><xsl:call-template name="get-link-for-type-members">
-						<xsl:with-param name="namespace" select="$namespace" />
-						<xsl:with-param name="name" select="$type" />
-						<xsl:with-param name="suffix">members</xsl:with-param>
-					</xsl:call-template>
-					<xsl:text> | </xsl:text>
-					<xsl:call-template name="get-link-for-type">
-						<xsl:with-param name="namespace" select="$namespace" />
-						<xsl:with-param name="name" select="$type" />
-						<xsl:with-param name="suffix" select="$typeConfigurations/node()[name()=$parent-metatype]/singular" />
-					</xsl:call-template>
-					<xsl:text> | </xsl:text>
-					<xsl:call-template name="get-link-for-namespace">							
-						<xsl:with-param name="namespace" select="$namespace" />
-						<xsl:with-param name="suffix">Unit</xsl:with-param>
-					</xsl:call-template></p>
+					<xsl:call-template name="seealso-section" />
 				</div>
 				<div>
 				<hr />

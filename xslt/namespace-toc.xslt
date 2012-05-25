@@ -7,7 +7,6 @@
 	<!-- -->
 	<xsl:include href="common.xslt" />
 	<xsl:include href="filenames.xslt" />
-	<!--xsl:include href="tags.xslt" /-->
 
 	<!-- -->
 	<xsl:template match="/">
