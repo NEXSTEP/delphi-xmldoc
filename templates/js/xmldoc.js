@@ -81,7 +81,7 @@ function initSeeAlso(){
 				td.onclick = showSeeAlso;
 //				td.onkeyup = ieKey;
 				td.onkeypress = showSeeAlso;
-				td.innerHTML = '<IMG id=button1 SRC="images/seeslso1a.gif' + '" ALT="' + L_SeeAlso_TEXT + '" BORDER=0 TABINDEX=0>';
+				td.innerHTML = '<IMG id=button1 SRC="images/seealso1a.gif' + '" ALT="' + L_SeeAlso_TEXT + '" BORDER=0 TABINDEX=0>';
 //				if (advanced)
 					nsbanner.insertAdjacentHTML('afterEnd', divS);
 //				else
