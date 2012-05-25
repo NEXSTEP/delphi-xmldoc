@@ -3,7 +3,8 @@ delphi-xmldoc
 
 Generate html documentation from Delphi xml documentation
 
-Used some portions of code and icons from NDOC (http://ndoc.sourceforge.net/)
+Based on from delphi-docs (http://code.google.com/p/delphi-docs/)
+Used some portions of XSLT code and icons from NDOC (http://ndoc.sourceforge.net/) msdn2 documenter
 
 Requires installed third-party XSLT2 processor: AltovaXML Community Edition
 http://www.altova.com/download/altovaxml/xml-processor-community.html
