@@ -4,18 +4,13 @@
 	<xsl:output method="html" indent="yes"  encoding="utf-8" omit-xml-declaration="yes"/>
 
 	<!-- -->
-	<xsl:include href="common.xslt" />
-	<xsl:include href="filenames.xslt" />
-	<xsl:include href="tags.xslt" />
+	<xsl:include href="namespace.xslt" />
 
-	<!-- -->
 	<xsl:template match="/">
-		<!--xsl:result-document href="{namespace/@name}.html"-->
-			<xsl:apply-templates select="namespace"/>
-		<!--/xsl:result-document-->
+		<xsl:apply-templates mode="project"/>
 	</xsl:template>
 
-	<xsl:template match="namespace">
+	<xsl:template match="namespace" mode="project">
 		<html dir="LTR">
 			<xsl:call-template name="html-head">
 				<xsl:with-param name="title" select="@name" />
@@ -53,10 +48,10 @@
 				</xsl:call-template>
 			</td>
 			<td width="50%">
-				<!--xsl:variable name='ns-xml' select=""-->
-			        <xsl:apply-templates select="document(concat(document-uri(/), '/../', @name, '.xml'))/namespace/devnotes/summary" />
-				<!--xsl:apply-templates select="(devnotes/summary)[1]/node()" />
-				<xsl:if test="not((devnotes/summary)[1]/node())">&#160;</xsl:if-->
+				<xsl:variable name='ns-xml' select="document(concat(document-uri(/), '/../', @name, '.xml'))" />
+			        <xsl:apply-templates select="$ns-xml/namespace/devnotes/summary" />
+
+  			        <xsl:apply-templates select="$ns-xml" mode="namespace"/>
 			</td>
 		</tr>
 	</xsl:template>

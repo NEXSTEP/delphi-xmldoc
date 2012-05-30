@@ -12,17 +12,21 @@
 	<xsl:include href="common.xslt" />
 	<xsl:include href="filenames.xslt" />
 	<xsl:include href="sections.xslt" />
-	<xsl:include href="tags.xslt" />
+	<xsl:include href="tags.xslt" /> 
 
 	<!-- -->
 	<xsl:template match="/">
+		<xsl:apply-templates select="namespace" mode="namespace" />
+	</xsl:template>
+
+	<xsl:template match="/" mode="namespace">
 		<xsl:result-document href="{namespace/@name}.html">
-			<xsl:apply-templates select="namespace"/>
+			<xsl:apply-templates select="namespace" mode="namespace" />
 		</xsl:result-document>
 	</xsl:template>
 
 	<!-- -->
-	<xsl:template match="namespace">
+	<xsl:template match="namespace" mode="namespace">
 		<html dir="LTR">
 			<xsl:call-template name="html-head">
 				<xsl:with-param name="title" select="@name" />
