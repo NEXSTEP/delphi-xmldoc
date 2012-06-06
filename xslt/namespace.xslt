@@ -11,8 +11,10 @@
 	<!-- -->
 	<xsl:include href="common.xslt" />
 	<xsl:include href="filenames.xslt" />
+	<xsl:include href="links.xslt" />
 	<xsl:include href="sections.xslt" />
 	<xsl:include href="tags.xslt" /> 
+	<xsl:include href="overload.xslt" /> 
 
 	<!-- -->
 	<xsl:template match="/">
@@ -182,27 +184,39 @@
 				<xsl:with-param name="mode">members</xsl:with-param>
 			</xsl:call-template>
 		</xsl:if>
+
+		<xsl:variable name="type" select="@name" />
+		<xsl:if test="(count(following-sibling::node()[@name=$type]) &gt; 0) and (count(preceding-sibling::node()[@name=$type]) = 0)">
+			<xsl:call-template name="create_page">
+				<xsl:with-param name="name">
+					<xsl:call-template name="get-filename-for-type">
+						<xsl:with-param name="namespace" select="../@name" />
+						<xsl:with-param name="name" select="@name" />
+					</xsl:call-template>
+				</xsl:with-param>
+				<xsl:with-param name="mode">overloads</xsl:with-param>
+			</xsl:call-template>
+		</xsl:if>
+
 	</xsl:template>
 
 
 	<xsl:template match="class | struct | interface | procedure | function | const | variable | type | pointer | array | enum | set | classref">
-		<tr valign="top">
-			<td width="50%">
-				<xsl:call-template name="get-link-for-type">
-					<xsl:with-param name="namespace" select="../@name" />
-					<xsl:with-param name="name" select="@name" />
-					<xsl:with-param name="id">
-						<xsl:if test="(local-name()='procedure' or local-name()='function') and contains(@procflags, 'overload')">
-							<xsl:value-of select="generate-id(./node())" />
-						</xsl:if>
-                                        </xsl:with-param>
-				</xsl:call-template>
-			</td>
-			<td width="50%">
-				<xsl:apply-templates select="(devnotes/summary)[1]/node()" />
-				<xsl:if test="not((devnotes/summary)[1]/node())">&#160;</xsl:if>
-			</td>
-		</tr>
+		<xsl:variable name="type" select="@name" />
+		<xsl:if test="count(preceding-sibling::node()[@name=$type]) = 0">
+			<tr valign="top">
+				<td width="50%">
+					<xsl:call-template name="get-link-for-type">
+						<xsl:with-param name="namespace" select="../@name" />
+						<xsl:with-param name="name" select="@name" />
+					</xsl:call-template>
+				</td>
+				<td width="50%">
+					<xsl:apply-templates select="(devnotes/summary)[1]/node()" />
+					<xsl:if test="not((devnotes/summary)[1]/node())">&#160;</xsl:if>
+				</td>
+			</tr>
+		</xsl:if>
 	</xsl:template>
 
 	<!-- -->

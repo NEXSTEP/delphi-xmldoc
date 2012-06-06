@@ -55,12 +55,35 @@
 				<xsl:when test="$mode='member'">			
 					<xsl:apply-templates select="." mode="member"/>
 				</xsl:when>
+				<xsl:when test="$mode='overloads'">			
+					<xsl:apply-templates select="." mode="overloads"/>
+				</xsl:when>
+				<xsl:when test="$mode='member-overloads'">			
+					<xsl:apply-templates select="." mode="member-overloads"/>
+				</xsl:when>
 				<xsl:otherwise>
 					<xsl:apply-templates select="."/>
 				</xsl:otherwise>
 			 </xsl:choose>
 		</xsl:result-document>
 	</xsl:template>
+
+	<!-- for XSL 1 -->
+	<!--xsl:template name="substring-after-last">
+		<xsl:param name="string" />
+		<xsl:param name="delimiter" />
+		<xsl:choose>
+			<xsl:when test="contains($string, $delimiter)">
+				<xsl:call-template name="substring-after-last">
+					<xsl:with-param name="string" select="substring-after($string, $delimiter)" />
+					<xsl:with-param name="delimiter" select="$delimiter" />
+				</xsl:call-template>
+			</xsl:when>
+			<xsl:otherwise>
+				<xsl:value-of select="$string" />
+			</xsl:otherwise>
+		</xsl:choose>
+	</xsl:template-->
 
 
 </xsl:stylesheet>

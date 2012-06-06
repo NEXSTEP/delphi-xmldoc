@@ -240,45 +240,62 @@
         <xsl:variable name="membersConfigurations" select="$configurations/members" />
 
 	<xsl:include href="member.xslt" />
+	<xsl:include href="memberoverload.xslt" />
 
 	<xsl:template match="constructor | destructor | field | procedure | function | property | event | array | enum | set | pointer | type | classref" mode="members-create">
-		<xsl:variable name="filename">
-			<xsl:call-template name="get-member-filename" />
-		</xsl:variable>
-
 		<xsl:call-template name="create_page">
-			<xsl:with-param name="name" select="$filename"/>
+			<xsl:with-param name="name">
+				<xsl:call-template name="get-member-filename" />
+			</xsl:with-param>
 			<xsl:with-param name="mode">member</xsl:with-param>
 		</xsl:call-template>
+
+		<xsl:variable name="type" select="@name" />
+		<xsl:if test="(count(following-sibling::node()[@name=$type]) &gt; 0) and (count(preceding-sibling::node()[@name=$type]) = 0)">
+			<xsl:call-template name="create_page">
+				<xsl:with-param name="name">
+					<xsl:call-template name="get-member-filename">
+						<xsl:with-param name="with-id">0</xsl:with-param>
+					</xsl:call-template>
+				</xsl:with-param>
+				<xsl:with-param name="mode">member-overloads</xsl:with-param>
+			</xsl:call-template>
+		</xsl:if>
 	</xsl:template>
 
 	<xsl:template match="constructor | destructor | field | procedure | function | property | event | array | enum | set | pointer | type | classref" mode="members">
 
-		<xsl:variable name="filename">
-			<xsl:call-template name="get-member-filename" />
-		</xsl:variable>
+		<xsl:variable name="type" select="@name" />
 
-		<tr valign="top">
-			<td width="50%">
-				<xsl:variable name="type" select="local-name()" />
-				<xsl:variable name="visibility" select="@visibility" />
+		<xsl:if test="count(preceding-sibling::node()[@name=$type]) = 0">
+			<xsl:variable name="filename">
+				<xsl:call-template name="get-member-filename">
+					<xsl:with-param name="with-id">0</xsl:with-param>
+				</xsl:call-template>
+			</xsl:variable>
 
-				<img src="images/{$membersConfigurations/node()[local-name()=$type]/node()[local-name()=$visibility]}" />
+			<tr valign="top">
+				<td width="50%">
+					<xsl:variable name="type" select="local-name()" />
+					<xsl:variable name="visibility" select="@visibility" />
+
+					<img src="images/{$membersConfigurations/node()[local-name()=$type]/node()[local-name()=$visibility]}" />
 				
-				<a>
-					<xsl:attribute name="href" select="$filename" />
-					<xsl:value-of select="@name" />
-				</a>
-				<xsl:if test="local-name()='methodref'">
-					<xsl:text> Inherited from </xsl:text>
-					<xsl:value-of select="concat(../@namespace, '.', ../@name)" />
-				</xsl:if>
-			</td>
-			<td width="50%">
-				<xsl:apply-templates select="(devnotes/summary)[1]/node()" />
-				<xsl:if test="not((devnotes/summary)[1]/node())">&#160;</xsl:if>
-			</td>
-		</tr>
+					<a>
+						<xsl:attribute name="href" select="$filename" />
+						<xsl:value-of select="@name" />
+					</a>
+					<xsl:if test="local-name()='methodref'">
+						<xsl:text> Inherited from </xsl:text>
+						<xsl:value-of select="concat(../@namespace, '.', ../@name)" />
+					</xsl:if>
+				</td>
+				<td width="50%">
+					<xsl:apply-templates select="(devnotes/summary)[1]/node()" />
+					<xsl:if test="not((devnotes/summary)[1]/node())">&#160;</xsl:if>
+				</td>
+			</tr>
+		</xsl:if>
 	</xsl:template>
 
 </xsl:stylesheet>

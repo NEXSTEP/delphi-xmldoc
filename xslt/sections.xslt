@@ -26,6 +26,10 @@
     </xsl:call-template>
 </xsl:template>
 
+<xsl:template name="summary-with-no-paragraph">
+	<xsl:apply-templates select="./devnotes/*[local-name()='summary']/node()" />
+</xsl:template>
+
 <xsl:template name="remarks-section">
     <xsl:call-template name="section">
 	<xsl:with-param name="type">remarks</xsl:with-param>
@@ -138,25 +142,38 @@
 	        </h3>
 		<p>
 
-			<xsl:variable name="namespace">
-				<xsl:choose>
-					<xsl:when test="../local-name()='members'">
-						<xsl:value-of select="../../../@name" />
-					</xsl:when>
-					<xsl:when test="../local-name()='class' or ../local-name()='struct' or ../local-name()='interface'">
-						<xsl:value-of select="../../@name" />
-					</xsl:when>
-					<xsl:when test="local-name()='namespace'">
-						<xsl:value-of select="@name" />
-					</xsl:when>
-					<xsl:otherwise>
-						<xsl:value-of select="../@name" />
-					</xsl:otherwise>
-				</xsl:choose>
-			</xsl:variable>
+			<xsl:variable name="namespace" select="/namespace/@name" />
+			<xsl:variable name="name" select="@name"/>
+
+			<xsl:if test="count(parent::node()/node()[@name=$name]) &gt; 1">
+				<a>
+					<xsl:attribute name="href">
+						<xsl:call-template name="get-filename-for-type">
+							<xsl:with-param name="namespace" select="$namespace" />
+							<xsl:with-param name="name">
+								<xsl:choose>
+									<xsl:when test="../local-name()='members'">
+										<xsl:value-of select="concat(../../@name, '.', $name)" />
+									</xsl:when>
+									<xsl:when test="../local-name()='struct' or ../local-name()='interface'">
+										<xsl:value-of select="concat(../@name, '.', $name)" />
+									</xsl:when>
+									<xsl:otherwise>	
+										<xsl:value-of select="$name" />
+									</xsl:otherwise>	
+								</xsl:choose>
+							</xsl:with-param>
+						
+						</xsl:call-template>
+					</xsl:attribute>
+					<xsl:value-of select="$name" />
+					<xsl:text> Overloads</xsl:text>
+				</a>
+				<xsl:text> | </xsl:text>
+			</xsl:if>
 
 			<xsl:if test="../local-name()='members' or ../local-name()='struct' or ../local-name()='interface'">
-				<xsl:variable name="metatype">
+        			<xsl:variable name="metatype">
 					<xsl:choose>
 						<xsl:when test="../local-name()='members'">
 							<xsl:value-of select="../../local-name()" />
@@ -166,7 +183,7 @@
 						</xsl:otherwise>
 					</xsl:choose>
 				</xsl:variable>
-				<xsl:variable name="name">
+				<xsl:variable name="type">
 					<xsl:choose>
 						<xsl:when test="../local-name()='members'">
 							<xsl:value-of select="../../@name" />
@@ -176,15 +193,16 @@
 						</xsl:otherwise>
 					</xsl:choose>
 				</xsl:variable>
+
 				<xsl:call-template name="get-link-for-type-members">
 					<xsl:with-param name="namespace" select="$namespace" />
-					<xsl:with-param name="name" select="$name" />
+					<xsl:with-param name="name" select="$type" />
 					<xsl:with-param name="suffix">Members</xsl:with-param>
 				</xsl:call-template>
 				<xsl:text> | </xsl:text>
 				<xsl:call-template name="get-link-for-type">
 					<xsl:with-param name="namespace" select="$namespace" />
-					<xsl:with-param name="name" select="$name" />
+					<xsl:with-param name="name" select="$type" />
 					<xsl:with-param name="suffix" select="$typeConfigurations/node()[name()=$metatype]/singular" />
 				</xsl:call-template>
 				<xsl:text> | </xsl:text>
@@ -226,5 +244,55 @@
 		</p>
 	</xsl:if>
 </xsl:template>
+
+<xsl:template name="overloads-seealso-section">
+	<xsl:param name="page" />
+	<h3>
+		<xsl:value-of select="$sectionConfigurations/node()[name()='seealso']" /> 
+	</h3>
+	<p>
+		<xsl:if test="$page='members'">
+			<xsl:variable name="metatype">
+				<xsl:choose>
+					<xsl:when test="../local-name()='members'">
+						<xsl:value-of select="../../local-name()" />
+					</xsl:when>
+					<xsl:otherwise>
+						<xsl:value-of select="../local-name()" />
+					</xsl:otherwise>
+				</xsl:choose>
+			</xsl:variable>
+			<xsl:variable name="name">
+				<xsl:choose>
+					<xsl:when test="../local-name()='members'">
+						<xsl:value-of select="../../@name" />
+					</xsl:when>
+					<xsl:otherwise>
+						<xsl:value-of select="../@name" />
+					</xsl:otherwise>
+				</xsl:choose>
+			</xsl:variable>
+
+
+			<xsl:call-template name="get-link-for-type-members">
+				<xsl:with-param name="namespace" select="/namespace/@name" />
+				<xsl:with-param name="name" select="$name" />
+				<xsl:with-param name="suffix">Members</xsl:with-param>
+			</xsl:call-template>
+			<xsl:text> | </xsl:text>
+			<xsl:call-template name="get-link-for-type">
+				<xsl:with-param name="namespace" select="/namespace/@name" />
+				<xsl:with-param name="name" select="$name" />
+				<xsl:with-param name="suffix" select="$typeConfigurations/node()[name()=$metatype]/singular" />
+			</xsl:call-template>
+			<xsl:text> | </xsl:text>
+		</xsl:if>
+		<xsl:call-template name="get-link-for-namespace">
+			<xsl:with-param name="namespace" select="/namespace/@name" />
+			<xsl:with-param name="suffix">Unit</xsl:with-param>
+		</xsl:call-template>
+	</p>
+</xsl:template>
+
 
 </xsl:stylesheet>

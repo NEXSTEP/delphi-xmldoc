@@ -11,25 +11,35 @@
 
 
 <xsl:template name="see-cref" match="see[@cref]">
+	<xsl:variable name="type" select="translate(substring-after(@cref, ':'), '{}', '.&lt;&gt;')" />
 	<a>
 		<xsl:attribute name="href">
-			<xsl:call-template name="get-cref-to-href">
+			bbb<xsl:call-template name="get-cref-to-href">
 				<xsl:with-param name="cref" select="@cref" />
 			</xsl:call-template>
 		</xsl:attribute>
 		<xsl:attribute name="title">
-			<xsl:value-of select="translate(substring-after(@cref, ':'), '{}', '.&lt;&gt;')" />
+			<xsl:value-of select="$type" />
 		</xsl:attribute>
 		<xsl:choose>
 			<xsl:when test="normalize-space(.)">
 				<xsl:value-of select="." />
 			</xsl:when>
-      <!--xsl:when test="contains(@cref, '|')">
-				<xsl:value-of select="translate(substring-after(@cref, '|'), '{}', '&lt;&gt;')" />
-			</xsl:when-->
+			<xsl:when test="(substring-before(@cref, ':') = 'M' or substring-before(@cref, ':') = 'P') and starts-with($type, concat(/namespace/@name, '.', ancestor::*[local-name()='class' or local-name()='interface' or local-name()='struct']/@name, '.')) and contains($type, '(')">
+			        <xsl:value-of select="substring-before(substring-after($type, concat(/namespace/@name, '.', ancestor::*[local-name()='class' or local-name()='interface' or local-name()='struct']/@name, '.')), '(')" />
+			</xsl:when>
+			<xsl:when test="(substring-before(@cref, ':') = 'M' or substring-before(@cref, ':') = 'P') and starts-with($type, concat(/namespace/@name, '.', ancestor::*[local-name()='class' or local-name()='interface' or local-name()='struct']/@name, '.'))">
+			        <xsl:value-of select="substring-after($type, concat(/namespace/@name, '.', ancestor::*[local-name()='class' or local-name()='interface' or local-name()='struct']/@name, '.'))" />
+			</xsl:when>
+			<xsl:when test="substring-before(@cref, ':') != 'N' and starts-with($type, concat(/namespace/@name, '.')) and contains($type, '(')">
+			        <xsl:value-of select="substring-before(substring-after($type, concat(/namespace/@name, '.')), '(')" />
+			</xsl:when>
+			<xsl:when test="substring-before(@cref, ':') != 'N' and starts-with($type, concat(/namespace/@name, '.'))">
+			        <xsl:value-of select="substring-after($type, concat(/namespace/@name, '.'))" />
+			</xsl:when>
 			<xsl:otherwise>
-        <xsl:value-of select="translate(substring-after(@cref, ':'), '{}', '.&lt;&gt;')" />
-      </xsl:otherwise>
+			        <xsl:value-of select="$type" />
+			</xsl:otherwise>
 		</xsl:choose>
     </a>
 </xsl:template>

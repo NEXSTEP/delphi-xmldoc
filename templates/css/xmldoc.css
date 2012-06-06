@@ -215,6 +215,13 @@ pre
 	margin-top: .5em;
 	margin-bottom: .5em;
 }
+tt 
+{
+	font: 100% Monospace, Courier New, Courier; /* This is 100% of 70% */
+	border-width: 1px;
+	border-style: solid;
+	border-color: #999999;
+}
 pre, code, .code
 {
 	font: 100% Monospace, Courier New, Courier; /* This is 100% of 70% */

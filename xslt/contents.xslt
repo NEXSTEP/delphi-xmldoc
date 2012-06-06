@@ -18,7 +18,9 @@
 				<div style="font-family: verdana; font-size: 8pt; cursor: pointer; margin: 6 4 8 2; text-align: right" onmouseover="this.style.textDecoration='underline'" onmouseout="this.style.textDecoration='none'" onclick="syncTree(window.parent.frames[1].document.URL)">sync toc</div>
 				<div id="tree" style="top: 35px; left: 0px;" class="treeDiv">
 					<div id="treeRoot" onselectstart="return false" ondragstart="return false">
-						<xsl:apply-templates />
+						<xsl:apply-templates>
+							<xsl:sort select="@name" />
+						</xsl:apply-templates>
 					</div>
 				</div>
 			</body>
@@ -30,7 +32,9 @@
 		<xsl:variable name='project-xml' select="document(concat(document-uri(/), '/../', @name, '.xml'))" />
 
 		<xsl:result-document href="{@name}.html">
-		        <xsl:apply-templates select="$project-xml" mode="project"/>
+		        <xsl:apply-templates select="$project-xml" mode="project">
+				<xsl:sort select="@name" />
+			</xsl:apply-templates>
 		</xsl:result-document>
 
 		<div class='treeNode'>
@@ -53,7 +57,9 @@
 
 			<xsl:if test="$project-xml/namespace/contains">
 				<div class="treeSubnodesHidden">
-					<xsl:apply-templates select="$project-xml" mode="toc-project"/>
+					<xsl:apply-templates select="$project-xml" mode="toc-project">
+						<xsl:sort select="@name" />
+					</xsl:apply-templates>
 				</div>
 			</xsl:if>
 		</div>
@@ -83,7 +89,9 @@
 
 			<xsl:if test="$namespace-xml/namespace/*">
 				<div class="treeSubnodesHidden">
-					<xsl:apply-templates select="$namespace-xml" mode="toc"/>
+					<xsl:apply-templates select="$namespace-xml" mode="toc">
+						<xsl:sort select="@name" />
+					</xsl:apply-templates>
 				</div>
 			</xsl:if>
 		</div>
@@ -156,130 +164,126 @@
 		<xsl:variable name="metatype" select="local-name()" />
 		<xsl:variable name="type" select="@name" />
 	
-		<!-- group member name (e.g. 'TMyCoolObject class') -->
-		<div class='treeNode'>
+		<xsl:if test="count(preceding-sibling::node()[@name=$type]) = 0">
+			<!-- group member name (e.g. 'TMyCoolObject class') -->
+			<div class='treeNode'>
 
-			<xsl:choose>
-				<xsl:when test="local-name()='class'or local-name()='interface' or local-name()='struct'">
-					<img src="images\treenodeplus.gif" class="treeLinkImage" onclick="expandCollapse(this.parentNode)" />
-				</xsl:when>
-				<xsl:otherwise>
-					<img src="images\treenodedot.gif" class="treeNoLinkImage" />
-				</xsl:otherwise>
-			</xsl:choose>
-			
-			<a>
-				<xsl:attribute name="href">
-					<xsl:call-template name="get-filename-for-type">
-						<xsl:with-param name="namespace" select="$namespace" />
-						<xsl:with-param name="name" select="$type" />
-						<xsl:with-param name="id">
-							<xsl:if test="(local-name()='procedure' or local-name()='function') and contains(@procflags, 'overload')">
-								<xsl:value-of select="generate-id(./node())" />
-							</xsl:if>
-               		                        </xsl:with-param>
-					</xsl:call-template>
-				</xsl:attribute>
-				<xsl:attribute name="target">main</xsl:attribute>
-				<xsl:attribute name="class">treeUnselected</xsl:attribute>
-				<xsl:attribute name="onclick">clickAnchor(this)</xsl:attribute>
-				<xsl:value-of select="$type" />
-				<xsl:text> </xsl:text>
-				<xsl:value-of select="$typeConfigurations/node()[name()=$metatype]/singular" />
-			</a>
-
-			<xsl:if test="local-name()='class'or local-name()='interface' or local-name()='struct'">
-				<div class="treeSubnodesHidden">
-
-					<!-- link to class/record/interface members -->
-					<div class='treeNode'>
+				<xsl:choose>
+					<xsl:when test="local-name()='class'or local-name()='interface' or local-name()='struct'">
+						<img src="images\treenodeplus.gif" class="treeLinkImage" onclick="expandCollapse(this.parentNode)" />
+					</xsl:when>
+					<xsl:otherwise>
 						<img src="images\treenodedot.gif" class="treeNoLinkImage" />
+					</xsl:otherwise>
+				</xsl:choose>
 
-						<a>
-							<xsl:attribute name="href">
-									<xsl:call-template name="get-filename-for-type-members">
-										<xsl:with-param name="namespace" select="$namespace" />
-										<xsl:with-param name="name" select="$type" />
-									</xsl:call-template>
-							</xsl:attribute>
-							<xsl:attribute name="target">main</xsl:attribute>
-							<xsl:attribute name="class">treeUnselected</xsl:attribute>
-							<xsl:attribute name="onclick">clickAnchor(this)</xsl:attribute>
-							<xsl:value-of select="$type" /><xsl:text> Members</xsl:text>
-						</a>
-					</div>
-
-					<!-- class/record/interface member groups (e.g. Methods, Properties, etc) -->
-					<xsl:choose>
-						<xsl:when test="local-name()='class'">
-							<xsl:call-template name="toc-members-list">
-								<xsl:with-param name="namespace" select="$namespace" />
-								<xsl:with-param name="name" select="$type" />
-								<xsl:with-param name="type">Constructors &amp; Destructors</xsl:with-param>
-								<xsl:with-param name="nodes" select="members/constructor[@visibility='published' or @visibility='public' or @visibility='protected'] | members/destructor[@visibility='published' or @visibility='public' or @visibility='protected']" />
-							</xsl:call-template>
-							<xsl:call-template name="toc-members-list">
-								<xsl:with-param name="namespace" select="$namespace" />
-								<xsl:with-param name="name" select="$type" />
-								<xsl:with-param name="type">Types</xsl:with-param>
-								<xsl:with-param name="nodes" select="members/type[@visibility='published' or @visibility='public' or @visibility='protected'] | members/array[@visibility='published' or @visibility='public' or @visibility='protected'] | members/enum[@visibility='published' or @visibility='public' or @visibility='protected'] | members/pointer[@visibility='published' or @visibility='public' or @visibility='protected'] | members/classref[@visibility='published' or @visibility='public' or @visibility='protected'] | members/set[@visibility='published' or @visibility='public' or @visibility='protected']" />
-							</xsl:call-template>
-							<xsl:call-template name="toc-members-list">
-								<xsl:with-param name="namespace" select="$namespace" />
-								<xsl:with-param name="name" select="$type" />
-								<xsl:with-param name="type">Fields</xsl:with-param>
-								<xsl:with-param name="nodes" select="members/field[@visibility='published' or @visibility='public' or @visibility='protected']" />
-							</xsl:call-template>
-							<xsl:call-template name="toc-members-list">
-								<xsl:with-param name="namespace" select="$namespace" />
-								<xsl:with-param name="name" select="$type" />
-								<xsl:with-param name="type">Methods</xsl:with-param>
-								<xsl:with-param name="nodes" select="members/procedure[@visibility='published' or @visibility='public' or @visibility='protected'] | members/function[@visibility='published' or @visibility='public' or @visibility='protected']" />
-							</xsl:call-template>
-							<xsl:call-template name="toc-members-list">
-								<xsl:with-param name="namespace" select="$namespace" />
-								<xsl:with-param name="name" select="$type" />
-								<xsl:with-param name="type">Properties</xsl:with-param>
-								<xsl:with-param name="nodes" select="members/property[@visibility='published' or @visibility='public' or @visibility='protected']" />
-							</xsl:call-template>
-							<xsl:call-template name="toc-members-list">
-								<xsl:with-param name="namespace" select="$namespace" />
-								<xsl:with-param name="name" select="$type" />
-								<xsl:with-param name="type">Events</xsl:with-param>
-								<xsl:with-param name="nodes" select="members/event[@visibility='published' or @visibility='public' or @visibility='protected']" />
-							</xsl:call-template>
-						</xsl:when>
-						<xsl:otherwise>
-							<xsl:call-template name="toc-members-list">
-								<xsl:with-param name="namespace" select="$namespace" />
-								<xsl:with-param name="name" select="$type" />
-								<xsl:with-param name="type">Fields</xsl:with-param>
-								<xsl:with-param name="nodes" select="field[@visibility='published' or @visibility='public' or @visibility='protected']" />
-							</xsl:call-template>
-							<xsl:call-template name="toc-members-list">
-								<xsl:with-param name="namespace" select="$namespace" />
-								<xsl:with-param name="name" select="$type" />
-								<xsl:with-param name="type">Methods</xsl:with-param>
-								<xsl:with-param name="nodes" select="procedure[@visibility='published' or @visibility='public' or @visibility='protected'] | function[@visibility='published' or @visibility='public' or @visibility='protected']" />
-							</xsl:call-template>
-							<xsl:call-template name="toc-members-list">
+				<a>
+					<xsl:attribute name="href">
+						<xsl:call-template name="get-filename-for-type">
 							<xsl:with-param name="namespace" select="$namespace" />
-								<xsl:with-param name="name" select="$type" />
-								<xsl:with-param name="type">Properties</xsl:with-param>
-								<xsl:with-param name="nodes" select="property[@visibility='published' or @visibility='public' or @visibility='protected']" />
-							</xsl:call-template>
-							<xsl:call-template name="toc-members-list">
-								<xsl:with-param name="namespace" select="$namespace" />
-								<xsl:with-param name="name" select="$type" />
-								<xsl:with-param name="type">Events</xsl:with-param>
-								<xsl:with-param name="nodes" select="event[@visibility='published' or @visibility='public' or @visibility='protected']" />
-							</xsl:call-template>
-						</xsl:otherwise>
-					</xsl:choose>
-				</div>
-			</xsl:if>
-		</div>
+							<xsl:with-param name="name" select="$type" />
+						</xsl:call-template>
+					</xsl:attribute>
+					<xsl:attribute name="target">main</xsl:attribute>
+					<xsl:attribute name="class">treeUnselected</xsl:attribute>
+					<xsl:attribute name="onclick">clickAnchor(this)</xsl:attribute>
+					<xsl:value-of select="$type" />
+					<xsl:text> </xsl:text>
+					<xsl:value-of select="$typeConfigurations/node()[name()=$metatype]/singular" />
+				</a>
 
+				<xsl:if test="local-name()='class'or local-name()='interface' or local-name()='struct'">
+					<div class="treeSubnodesHidden">
+
+						<!-- link to class/record/interface members -->
+						<div class='treeNode'>
+							<img src="images\treenodedot.gif" class="treeNoLinkImage" />
+
+							<a>
+								<xsl:attribute name="href">
+										<xsl:call-template name="get-filename-for-type-members">
+											<xsl:with-param name="namespace" select="$namespace" />
+											<xsl:with-param name="name" select="$type" />
+										</xsl:call-template>
+								</xsl:attribute>
+								<xsl:attribute name="target">main</xsl:attribute>
+								<xsl:attribute name="class">treeUnselected</xsl:attribute>
+								<xsl:attribute name="onclick">clickAnchor(this)</xsl:attribute>
+								<xsl:value-of select="$type" /><xsl:text> Members</xsl:text>
+							</a>
+						</div>
+
+						<!-- class/record/interface member groups (e.g. Methods, Properties, etc) -->
+						<xsl:choose>
+							<xsl:when test="local-name()='class'">
+								<xsl:call-template name="toc-members-list">
+									<xsl:with-param name="namespace" select="$namespace" />
+									<xsl:with-param name="name" select="$type" />
+									<xsl:with-param name="type">Constructors &amp; Destructors</xsl:with-param>
+									<xsl:with-param name="nodes" select="members/constructor[@visibility='published' or @visibility='public' or @visibility='protected'] | members/destructor[@visibility='published' or @visibility='public' or @visibility='protected']" />
+								</xsl:call-template>
+								<xsl:call-template name="toc-members-list">
+									<xsl:with-param name="namespace" select="$namespace" />
+									<xsl:with-param name="name" select="$type" />
+									<xsl:with-param name="type">Types</xsl:with-param>
+									<xsl:with-param name="nodes" select="members/type[@visibility='published' or @visibility='public' or @visibility='protected'] | members/array[@visibility='published' or @visibility='public' or @visibility='protected'] | members/enum[@visibility='published' or @visibility='public' or @visibility='protected'] | members/pointer[@visibility='published' or @visibility='public' or @visibility='protected'] | members/classref[@visibility='published' or @visibility='public' or @visibility='protected'] | members/set[@visibility='published' or @visibility='public' or @visibility='protected']" />
+								</xsl:call-template>
+								<xsl:call-template name="toc-members-list">
+									<xsl:with-param name="namespace" select="$namespace" />
+									<xsl:with-param name="name" select="$type" />
+									<xsl:with-param name="type">Fields</xsl:with-param>
+									<xsl:with-param name="nodes" select="members/field[@visibility='published' or @visibility='public' or @visibility='protected']" />
+								</xsl:call-template>
+								<xsl:call-template name="toc-members-list">
+									<xsl:with-param name="namespace" select="$namespace" />
+									<xsl:with-param name="name" select="$type" />
+									<xsl:with-param name="type">Methods</xsl:with-param>
+									<xsl:with-param name="nodes" select="members/procedure[@visibility='published' or @visibility='public' or @visibility='protected'] | members/function[@visibility='published' or @visibility='public' or @visibility='protected']" />
+								</xsl:call-template>
+								<xsl:call-template name="toc-members-list">
+									<xsl:with-param name="namespace" select="$namespace" />
+									<xsl:with-param name="name" select="$type" />
+									<xsl:with-param name="type">Properties</xsl:with-param>
+									<xsl:with-param name="nodes" select="members/property[@visibility='published' or @visibility='public' or @visibility='protected']" />
+								</xsl:call-template>
+								<xsl:call-template name="toc-members-list">
+									<xsl:with-param name="namespace" select="$namespace" />
+									<xsl:with-param name="name" select="$type" />
+									<xsl:with-param name="type">Events</xsl:with-param>
+									<xsl:with-param name="nodes" select="members/event[@visibility='published' or @visibility='public' or @visibility='protected']" />
+								</xsl:call-template>
+							</xsl:when>
+							<xsl:otherwise>
+								<xsl:call-template name="toc-members-list">
+									<xsl:with-param name="namespace" select="$namespace" />
+									<xsl:with-param name="name" select="$type" />
+									<xsl:with-param name="type">Fields</xsl:with-param>
+									<xsl:with-param name="nodes" select="field[@visibility='published' or @visibility='public' or @visibility='protected']" />
+								</xsl:call-template>
+								<xsl:call-template name="toc-members-list">
+									<xsl:with-param name="namespace" select="$namespace" />
+									<xsl:with-param name="name" select="$type" />
+									<xsl:with-param name="type">Methods</xsl:with-param>
+									<xsl:with-param name="nodes" select="procedure[@visibility='published' or @visibility='public' or @visibility='protected'] | function[@visibility='published' or @visibility='public' or @visibility='protected']" />
+								</xsl:call-template>
+								<xsl:call-template name="toc-members-list">
+								<xsl:with-param name="namespace" select="$namespace" />
+									<xsl:with-param name="name" select="$type" />
+									<xsl:with-param name="type">Properties</xsl:with-param>
+									<xsl:with-param name="nodes" select="property[@visibility='published' or @visibility='public' or @visibility='protected']" />
+								</xsl:call-template>
+								<xsl:call-template name="toc-members-list">
+									<xsl:with-param name="namespace" select="$namespace" />
+									<xsl:with-param name="name" select="$type" />
+									<xsl:with-param name="type">Events</xsl:with-param>
+									<xsl:with-param name="nodes" select="event[@visibility='published' or @visibility='public' or @visibility='protected']" />
+								</xsl:call-template>
+							</xsl:otherwise>
+						</xsl:choose>
+					</div>
+				</xsl:if>
+			</div>
+		</xsl:if>
 	</xsl:template>
 
 
@@ -309,7 +313,9 @@
 				</a>
 
 				<div class="treeSubnodesHidden">
-					<xsl:apply-templates select="$nodes" mode="toc-members" />
+					<xsl:apply-templates select="$nodes" mode="toc-members" >
+						<xsl:sort select="@name" />
+					</xsl:apply-templates>
 				</div>
 
 			</div>
@@ -318,22 +324,27 @@
 
 	<xsl:template match="constructor | destructor | procedure | function | const | field | event | array | type | enum | set | pointer | property" mode="toc-members">
 		<xsl:variable name="metatype" select="local-name()" />
+		<xsl:variable name="type" select="@name" />
 
-		<div class='treeNode'>
-			<img src="images\treenodedot.gif" class="treeNoLinkImage" />
+		<xsl:if test="count(preceding-sibling::node()[@name=$type]) = 0">
+			<div class='treeNode'>
+				<img src="images\treenodedot.gif" class="treeNoLinkImage" />
 
-			<a>
-				<xsl:attribute name="href">
-					<xsl:call-template name="get-member-filename" />
-				</xsl:attribute>
-				<xsl:attribute name="target">main</xsl:attribute>
-				<xsl:attribute name="class">treeUnselected</xsl:attribute>
-				<xsl:attribute name="onclick">clickAnchor(this)</xsl:attribute>
-				<xsl:value-of select="@name" />
-				<xsl:text> </xsl:text>
-				<xsl:value-of select="$typeConfigurations/node()[name()=$metatype]/singular" />
-			</a>
-		</div>
+				<a>
+					<xsl:attribute name="href">
+						<xsl:call-template name="get-member-filename">
+							<xsl:with-param name="with-id">0</xsl:with-param>
+						</xsl:call-template>
+					</xsl:attribute>
+					<xsl:attribute name="target">main</xsl:attribute>
+					<xsl:attribute name="class">treeUnselected</xsl:attribute>
+					<xsl:attribute name="onclick">clickAnchor(this)</xsl:attribute>
+					<xsl:value-of select="@name" />
+					<xsl:text> </xsl:text>
+					<xsl:value-of select="$typeConfigurations/node()[name()=$metatype]/singular" />
+				</a>
+			</div>
+		</xsl:if>
 	</xsl:template>
 
 

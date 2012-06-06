@@ -13,7 +13,7 @@
 
 	<xsl:template match="class | interface | struct" mode="syntax">
 		<xsl:value-of select="@name" />
-		<xsl:text>&#160;=&#160;</xsl:text>
+		<xsl:text> = </xsl:text>
 		<xsl:value-of select="local-name()" />
 		<xsl:text>(</xsl:text>
 		<xsl:choose>
@@ -25,12 +25,12 @@
 			</xsl:otherwise>
 		</xsl:choose>
 		<xsl:text>)</xsl:text>
-		<xsl:text>;&#160;</xsl:text>
+		<xsl:text>; </xsl:text>
 	</xsl:template>
 
 	<xsl:template match="struct" mode="syntax">
 		<xsl:value-of select="@name" />
-		<xsl:text>&#160;=&#160;record;</xsl:text>
+		<xsl:text> = record;</xsl:text>
 	</xsl:template>
 
 	<xsl:template match="field | property | event | variable | const" mode="syntax">
@@ -55,10 +55,10 @@
 				<xsl:text>property</xsl:text>
 			</xsl:when>
 		</xsl:choose>
-		<xsl:text>&#160;</xsl:text>
+		<xsl:text> </xsl:text>
 		
 		<xsl:value-of select="@name" />
-		<xsl:text>:&#160;</xsl:text>
+		<xsl:text>: </xsl:text>
 		<xsl:if test="@type">
 			<xsl:value-of select="@type" />
 		</xsl:if>
@@ -66,10 +66,10 @@
 			<xsl:apply-templates select="array" mode="syntax-array" />
 		</xsl:if>
 		<xsl:if test="./value">
-			<xsl:text>&#160;=&#160;</xsl:text>
+			<xsl:text> = </xsl:text>
 			<xsl:value-of select="normalize-space(value)" />
 		</xsl:if>
-		<xsl:text>;&#160;</xsl:text>
+		<xsl:text>; </xsl:text>
 	</xsl:template>
 
 	<xsl:template match="array" mode="syntax-array">
@@ -82,11 +82,11 @@
 			<xsl:text>]</xsl:text>
 		</xsl:if>
 		<xsl:if test="element/@type">
-			<xsl:text>&#160;of&#160;</xsl:text>
+			<xsl:text> of </xsl:text>
 			<xsl:value-of select="element/@type"/>
 		</xsl:if>
 		<xsl:if test="array">
-			<xsl:text>&#160;of&#160;</xsl:text>
+			<xsl:text> of </xsl:text>
 			<xsl:apply-templates select="array" mode="syntax-array" />
 		</xsl:if>
 	</xsl:template>
@@ -94,11 +94,11 @@
 	<xsl:template match="type | pointer | array | enum | set | classref" mode="syntax">
 		<xsl:call-template name="syntax-visibility"/>
 		<xsl:text>type</xsl:text>
-		<xsl:text>&#160;</xsl:text>
+		<xsl:text> </xsl:text>
 		<xsl:value-of select="@name" />
-		<xsl:text>&#160;=&#160;</xsl:text>
+		<xsl:text> = </xsl:text>
 		<xsl:if test="local-name()='set'">
-			<xsl:text>set of&#160;</xsl:text>
+			<xsl:text>set of </xsl:text>
 		</xsl:if>
 		<xsl:if test="@type">
 			<xsl:value-of select="@type" />
@@ -110,94 +110,94 @@
 			<xsl:text>(</xsl:text>
 			<xsl:for-each select="element">
 				<xsl:value-of select="@name"/>
-				<xsl:text>&#160;=&#160;</xsl:text>
+				<xsl:text> = </xsl:text>
 				<xsl:value-of select="@value"/>
 				<xsl:if test="position()!= last()">
-					<xsl:text>,&#160;</xsl:text>
+					<xsl:text>, </xsl:text>
 				</xsl:if>
 			</xsl:for-each>
 			<xsl:text>)</xsl:text>
 		</xsl:if>
 		<xsl:if test="local-name()='classref'">
-			<xsl:text>class of&#160;</xsl:text>
+			<xsl:text>class of </xsl:text>
 			<xsl:value-of select="@ref"/>
 		</xsl:if>
-		<xsl:text>;&#160;</xsl:text>
+		<xsl:text>; </xsl:text>
 	</xsl:template>
 
 	<xsl:template match="constructor | destructor | procedure | function" mode="syntax">
 		<xsl:call-template name="syntax-visibility"/>
 		<xsl:call-template name="syntax-procflag">
 			<xsl:with-param name="flag">class</xsl:with-param>
-			<xsl:with-param name="delim">&#160;</xsl:with-param>
+			<xsl:with-param name="delim"> </xsl:with-param>
 		</xsl:call-template>
 		<xsl:value-of select="local-name()" />
-		<xsl:text>&#160;</xsl:text>
+		<xsl:text> </xsl:text>
 		<xsl:value-of select="@name" />
 		
 		<xsl:if test="parameters/parameter">
 			<xsl:text>(</xsl:text>
 			<xsl:for-each select="parameters/parameter">
 				<xsl:text>&#10;</xsl:text>
-				<xsl:text>&#160;&#160;&#160;</xsl:text>
+				<xsl:text>   </xsl:text>
 				<xsl:if test="contains(@paramflags, 'var')">
-					<xsl:text>var&#160;</xsl:text>
+					<xsl:text>var </xsl:text>
 				</xsl:if>
 				<xsl:if test="contains(@paramflags, 'out')">
-					<xsl:text>out&#160;</xsl:text>
+					<xsl:text>out </xsl:text>
 				</xsl:if>
 				<xsl:if test="contains(@paramflags, 'const')">
-					<xsl:text>const&#160;</xsl:text>
+					<xsl:text>const </xsl:text>
 				</xsl:if>
 				<xsl:value-of select="@name"/>
 				<xsl:if test="@type">
-					<xsl:text>:&#160;</xsl:text>
+					<xsl:text>: </xsl:text>
 					<xsl:value-of select="@type"/>
 				</xsl:if>
 				<xsl:if test="array">
-					<xsl:text>:&#160;</xsl:text>
+					<xsl:text>: </xsl:text>
 					<xsl:apply-templates select="array" mode="syntax-array" />
 				</xsl:if>
 				<xsl:if test="value">
-					<xsl:text>&#160;=&#160;</xsl:text>
+					<xsl:text> = </xsl:text>
 					<xsl:value-of select="normalize-space(value)"/>
 				</xsl:if>
 				<xsl:if test="position()!= last()">
-					<xsl:text>;&#160;</xsl:text>
+					<xsl:text>; </xsl:text>
 				</xsl:if>
 			</xsl:for-each>
 			<xsl:text>&#10;)</xsl:text>
 		</xsl:if>
 
 		<xsl:if test="local-name() = 'function'">
-			<xsl:text>:&#160;</xsl:text>
+			<xsl:text>: </xsl:text>
 			<xsl:value-of select="parameters/retval/@type" />
 		</xsl:if>
 
-		<xsl:text>;&#160;</xsl:text>
+		<xsl:text>; </xsl:text>
 		<xsl:call-template name="syntax-procflag">
 			<xsl:with-param name="flag">overload</xsl:with-param>
-			<xsl:with-param name="delim">;&#160;</xsl:with-param>
+			<xsl:with-param name="delim">; </xsl:with-param>
 		</xsl:call-template>
 		<xsl:call-template name="syntax-procflag">
 			<xsl:with-param name="flag">virtual</xsl:with-param>
-			<xsl:with-param name="delim">;&#160;</xsl:with-param>
+			<xsl:with-param name="delim">; </xsl:with-param>
 		</xsl:call-template>
 		<xsl:call-template name="syntax-procflag">
 			<xsl:with-param name="flag">override</xsl:with-param>
-			<xsl:with-param name="delim">;&#160;</xsl:with-param>
+			<xsl:with-param name="delim">; </xsl:with-param>
 		</xsl:call-template>
 		<xsl:call-template name="syntax-procflag">
 			<xsl:with-param name="flag">static</xsl:with-param>
-			<xsl:with-param name="delim">;&#160;</xsl:with-param>
+			<xsl:with-param name="delim">; </xsl:with-param>
 		</xsl:call-template>
 		<xsl:call-template name="syntax-procflag">
 			<xsl:with-param name="flag">abstract</xsl:with-param>
-			<xsl:with-param name="delim">;&#160;</xsl:with-param>
+			<xsl:with-param name="delim">; </xsl:with-param>
 		</xsl:call-template>
 		<xsl:call-template name="syntax-procflag">
 			<xsl:with-param name="flag">inline</xsl:with-param>
-			<xsl:with-param name="delim">;&#160;</xsl:with-param>
+			<xsl:with-param name="delim">; </xsl:with-param>
 		</xsl:call-template>
 	</xsl:template>
 
@@ -205,7 +205,7 @@
 		<xsl:if test="../local-name() = 'members' or ../local-name() = 'struct'">
 			<xsl:if test="@visibility != ''">
 				<xsl:value-of select="@visibility" />
-				<xsl:text>&#160;</xsl:text>
+				<xsl:text> </xsl:text>
 			</xsl:if>
 		</xsl:if>
 	</xsl:template>
