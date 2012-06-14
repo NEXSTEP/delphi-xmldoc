@@ -32,7 +32,7 @@
 				</xsl:call-template>
 			</xsl:attribute>
 			<xsl:if test="$include-namespace">
-				+<xsl:value-of select="$namespace" />+
+				<xsl:value-of select="$namespace" />
 				<xsl:text>.</xsl:text>
 			</xsl:if>
 			<xsl:value-of select="$name" />

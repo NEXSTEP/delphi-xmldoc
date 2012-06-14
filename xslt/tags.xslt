@@ -14,7 +14,7 @@
 	<xsl:variable name="type" select="translate(substring-after(@cref, ':'), '{}', '.&lt;&gt;')" />
 	<a>
 		<xsl:attribute name="href">
-			bbb<xsl:call-template name="get-cref-to-href">
+			<xsl:call-template name="get-cref-to-href">
 				<xsl:with-param name="cref" select="@cref" />
 			</xsl:call-template>
 		</xsl:attribute>
