@@ -55,7 +55,7 @@ for (; !fc.atEnd(); fc.moveNext())
     xmldata = file.ReadAll();
     file.Close();
     file = fso.OpenTextFile(fc.item(), 2);
-    file.WriteLine(xmldata.replace('type=bullet"', 'type="bullet"').replace('type=number"', 'type="number"').replace('type=table"', 'type="table"').replace(/<\s*paramref\s+name=(.+)\s*\/\s*>/gi, '"$1"'));
+    file.WriteLine(xmldata.replace(/type=bullet"/gi, 'type="bullet"').replace(/type=number"/gi, 'type="number"').replace(/type=table"/gi, 'type="table"').replace(/<\s*paramref\s+name=(.+)\s*\/\s*>/gi, '"$1"'));
     file.Close();
   }
 }
